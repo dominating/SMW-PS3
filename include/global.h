@@ -288,6 +288,9 @@ std::string stripCreatorAndDotMap(const std::string &filename);
 
 //gfx stuff
 extern SDL_Surface		*screen;		//for gfx
+extern SDL_Window		*window;
+extern SDL_Renderer		*renderer;
+extern SDL_Texture		*screen_texture;
 extern SDL_Surface		*blitdest;		//for gfx
 extern short			x_shake;
 extern short			y_shake;

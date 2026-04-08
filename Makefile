@@ -27,7 +27,7 @@ SFOXML		:=	sfo.xml
 TITLE		:=	Super Mario War
 APPID		:=	SMW00PS33
 CONTENTID	:=	UP0001-$(APPID)_00-0000000000000000
-APPVERSION	:=	$(shell xmlstarlet sel -t -v "//value[@name='APP_VER']" $(CURDIR)/$(SFOXML))
+APPVERSION	:=	01.00
 RELEASEVER	:=	$(shell echo $(APPVERSION) | sed -r 's/8./.8_r/g' | sed -r 's/r0/r/g')
 
 #---------------------------------------------------------------------------------

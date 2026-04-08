@@ -3282,7 +3282,10 @@ void Menu::RunMenu()
 #endif
  
 		//double buffering -> flip buffers
-		SDL_Flip(screen);
+		screen_texture = SDL_CreateTextureFromSurface(renderer, screen);
+		SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
+		SDL_RenderPresent(renderer);
+		SDL_DestroyTexture(screen_texture);
 
 		flipfps = 1000.0f / (float)ticks;
 

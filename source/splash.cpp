@@ -13,7 +13,6 @@
 #include "time.h"
 #include <string>
 #include <iostream>
-#include <io/pad.h>
 
 using std::cout;
 using std::endl;
@@ -517,10 +516,6 @@ bool LoadAndSplashScreen()
 
 	SDL_Event event;
 
-	padInfo padinfo;
-	padData paddata;
-
-	ioPadInit(7);
 	int i;
 
 	while (true)
@@ -531,18 +526,6 @@ bool LoadAndSplashScreen()
 
 		while(SDL_PollEvent(&event))
 		{
-			ioPadGetInfo (&padinfo);
-
-	        if(padinfo.status[i]) 
-			{
-	            ioPadGetData (i, &paddata);
-
-	            if(paddata.BTN_TRIANGLE) 
-				{
-	               return true;
-	            }
-			}
-
 			switch(event.type)
 			{
 #ifndef _XBOX
@@ -706,7 +689,10 @@ bool LoadAndSplashScreen()
 			}
 		}
 
-		SDL_Flip(screen);
+		screen_texture = SDL_CreateTextureFromSurface(renderer, screen);
+		SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
+		SDL_RenderPresent(renderer);
+		SDL_DestroyTexture(screen_texture);
 
 		if(state == 7)
 		{

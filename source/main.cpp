@@ -22,7 +22,7 @@
 | start:		24.01.2003									|
 | last changes:	12.02.2008									|
 |															|
-|								© 2003-2009 Florian Hufsky  |
+|								ï¿½ 2003-2009 Florian Hufsky  |
 |								  florian.hufsky@gmail.com	|
 |                                     mtschaffer@gmail.com  |
 |								  http://smw.72dpiarmy.com	|
@@ -343,7 +343,6 @@ Procedure for adding a new powerup:
 #include <time.h>
 #include <math.h>
 
-#include <io/pad.h>
 #include <ppu-types.h>
 #include <sys/thread.h>
 
@@ -371,6 +370,9 @@ Procedure for adding a new powerup:
 
 //------ system stuff ------
 SDL_Surface		*screen;		//for gfx (maybe the gfx system should be improved -> resource manager)
+SDL_Window		*window;
+SDL_Renderer		*renderer;
+SDL_Texture		*screen_texture;
 SDL_Surface		*blitdest;		//the destination surface for all drawing (can be swapped from screen to another surface)
 
 short			g_iCurrentDrawIndex = 0;
@@ -1158,20 +1160,21 @@ void SpinScreen()
 int main(int argc, char *argv[])
 {
 
-	ioPadInit(7);
-
 	printf("-------------------------------------------------------------------------------\n");
 	printf(" %s %s\n", TITLESTRING, VERSIONNUMBER);
 	printf("-------------------------------------------------------------------------------\n");
 	printf("\n---------------- startup ----------------\n");
 	
-	if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER) < 0 )
+	if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_JOYSTICK) < 0 )
 	{
 		printf("Can't init SDL %s",SDL_GetError());
 		return 0;
 	}
 
 	SDL_ShowCursor(SDL_DISABLE);
+
+	window = SDL_CreateWindow("SMW-PS3", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 	gfx_init(640, 480, false);
 	blitdest = screen;
@@ -3545,7 +3548,10 @@ void RunGame()
 #endif
  
 		//double buffering -> flip buffers
-		SDL_Flip(screen);
+		screen_texture = SDL_CreateTextureFromSurface(renderer, screen);
+		SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
+		SDL_RenderPresent(renderer);
+		SDL_DestroyTexture(screen_texture);
 
 		flipfps = 1000.0f / (float)ticks;
 
